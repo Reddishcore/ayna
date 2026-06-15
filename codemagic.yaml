@@ -19,6 +19,12 @@ workflows:
         script: npm install @capacitor/cli @capacitor/core @capacitor/ios
       - name: Sync Capacitor
         script: npx cap sync ios
+      - name: Patch Info.plist
+        script: |
+          PLIST="ios/App/App/Info.plist"
+          /usr/libexec/PlistBuddy -c "Add :CFBundleIconName string AppIcon" "$PLIST" || \
+          /usr/libexec/PlistBuddy -c "Set :CFBundleIconName AppIcon" "$PLIST"
+          echo "CFBundleIconName set"
       - name: Set build number
         script: |
           cd ios/App
