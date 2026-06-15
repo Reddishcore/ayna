@@ -1,0 +1,12 @@
+[build]
+  publish = "."
+
+[functions]
+  directory = "netlify/functions"
+  node_bundler = "esbuild"
+
+[functions."shoes"]
+  timeout = 26
+
+[functions."upload"]
+  timeout = 20
