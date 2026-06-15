@@ -19,6 +19,14 @@ workflows:
         script: npm install @capacitor/cli @capacitor/core @capacitor/ios
       - name: Sync Capacitor
         script: npx cap sync ios
+      - name: Copy app icons
+        script: |
+          ICON_DST="ios/App/App/Assets.xcassets/AppIcon.appiconset"
+          mkdir -p "$ICON_DST"
+          cp app-icon/*.png "$ICON_DST/"
+          cp app-icon/Contents.json "$ICON_DST/"
+          echo "Icons copied:"
+          ls "$ICON_DST"
       - name: Patch Info.plist
         script: |
           PLIST="ios/App/App/Info.plist"
