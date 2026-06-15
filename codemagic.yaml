@@ -20,7 +20,10 @@ workflows:
         script: npx cap sync ios
       - name: Install CocoaPods
         script: |
-          cd ios/App
+          find . -name "Podfile" | head -5
+          PODFILE_DIR=$(find . -name "Podfile" -not -path "*/node_modules/*" | head -1 | xargs dirname)
+          echo "Podfile found at: $PODFILE_DIR"
+          cd "$PODFILE_DIR"
           pod install
       - name: Build iOS
         script: |
