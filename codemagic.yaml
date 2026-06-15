@@ -21,7 +21,11 @@ workflows:
         script: npx cap sync ios
       - name: Set build number
         script: |
-          agvtool new-version -all $(($(app-store-connect get-latest-build-number --app-id 6780380139) + 1))
+          cd ios/App
+          LATEST=$(app-store-connect get-latest-build-number 6780380139 || echo "1")
+          NEW=$((LATEST + 1))
+          /usr/libexec/PlistBuddy -c "Set :CFBundleVersion $NEW" App/Info.plist
+          echo "Build number set to $NEW"
       - name: Install CocoaPods
         script: |
           cd ios/App
