@@ -14,16 +14,11 @@ workflows:
         script: npm install
       - name: Install Capacitor CLI
         script: npm install @capacitor/cli @capacitor/core @capacitor/ios
-      - name: Install Capacitor iOS
-        script: npx cap add ios || true
       - name: Sync Capacitor
         script: npx cap sync ios
       - name: Install CocoaPods
         script: |
-          find . -name "Podfile" | head -5
-          PODFILE_DIR=$(find . -name "Podfile" -not -path "*/node_modules/*" | head -1 | xargs dirname)
-          echo "Podfile found at: $PODFILE_DIR"
-          cd "$PODFILE_DIR"
+          cd ios/App
           pod install
       - name: Build iOS
         script: |
