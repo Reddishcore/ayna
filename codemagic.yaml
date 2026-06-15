@@ -19,6 +19,9 @@ workflows:
         script: npm install @capacitor/cli @capacitor/core @capacitor/ios
       - name: Sync Capacitor
         script: npx cap sync ios
+      - name: Set build number
+        script: |
+          agvtool new-version -all $(($(app-store-connect get-latest-build-number --app-id 6780380139) + 1))
       - name: Install CocoaPods
         script: |
           cd ios/App
