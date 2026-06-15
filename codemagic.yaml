@@ -5,7 +5,7 @@ workflows:
     integrations:
       app_store_connect: Codemagic
     environment:
-      xcode: 16.4
+      xcode: latest
       ios_signing:
         distribution_type: app_store
         bundle_identifier: com.erenzeyb.ayna
