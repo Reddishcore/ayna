@@ -23,6 +23,11 @@ exports.handler = async (event) => {
     return { statusCode: 400, body: JSON.stringify({ error: "İki fotoğraf da gerekli" }) };
   }
 
+  console.log("model_image prefix:", model_image.slice(0, 60));
+  console.log("garment_image prefix:", garment_image.slice(0, 60));
+  console.log("model_image length:", model_image.length);
+  console.log("garment_image length:", garment_image.length);
+
   const validCategories = ["tops", "bottoms", "one-pieces", "auto"];
   const garmentCategory = validCategories.includes(category) ? category : "tops";
 
@@ -42,6 +47,7 @@ exports.handler = async (event) => {
     const data = await res.json();
 
     if (!res.ok) {
+      console.log("FASHN error response:", JSON.stringify(data));
       return {
         statusCode: res.status,
         body: JSON.stringify({ error: (data && (data.error?.message || data.error || data.message)) || "FASHN isteği reddetti" })
