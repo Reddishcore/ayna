@@ -32,7 +32,10 @@ workflows:
           PLIST="ios/App/App/Info.plist"
           /usr/libexec/PlistBuddy -c "Add :CFBundleIconName string AppIcon" "$PLIST" || \
           /usr/libexec/PlistBuddy -c "Set :CFBundleIconName AppIcon" "$PLIST"
-          echo "CFBundleIconName set"
+          /usr/libexec/PlistBuddy -c "Add :NSCameraUsageDescription string 'Ayna needs camera access so you can take a photo to try on clothes.'" "$PLIST" || true
+          /usr/libexec/PlistBuddy -c "Add :NSPhotoLibraryUsageDescription string 'Ayna needs photo library access so you can choose a photo to try on clothes.'" "$PLIST" || true
+          /usr/libexec/PlistBuddy -c "Add :NSPhotoLibraryAddUsageDescription string 'Ayna needs permission to save your try-on results to your photo library.'" "$PLIST" || true
+          echo "CFBundleIconName and permissions set"
       - name: Set build number
         script: |
           cd ios/App
