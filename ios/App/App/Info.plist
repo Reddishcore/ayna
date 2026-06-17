@@ -26,6 +26,12 @@
 	<string>$(CURRENT_PROJECT_VERSION)</string>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
+	<key>NSCameraUsageDescription</key>
+	<string>Ayna needs camera access so you can take a photo to try on clothes.</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>Ayna needs photo library access so you can choose a photo to try on clothes.</string>
+	<key>NSPhotoLibraryAddUsageDescription</key>
+	<string>Ayna needs permission to save your try-on results to your photo library.</string>
 	<key>UILaunchStoryboardName</key>
 	<string>LaunchScreen</string>
 	<key>UIMainStoryboardFile</key>
