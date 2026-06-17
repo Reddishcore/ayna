@@ -154,4 +154,110 @@ footer a { color: var(--muted); }
 
 @media (max-width: 600px) {
   nav { padding: 16px 20px; }
-  .nav-links { display:
+  .nav-links { display: none; }
+  .hero { padding: 60px 20px 40px; }
+  .features { padding: 40px 20px; }
+  .privacy { padding: 60px 20px; }
+  .divider { margin: 0 20px; }
+  footer { padding: 24px 20px; }
+}
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="https://ayna.style" class="nav-logo">Ayna</a>
+  <ul class="nav-links">
+    <li><a href="#features">Features</a></li>
+    <li><a href="#privacy">Privacy</a></li>
+    <li><a href="mailto:hello@ayna.style">Contact</a></li>
+  </ul>
+</nav>
+
+<section class="hero">
+  <h1>Try before<br>you buy.</h1>
+  <p>Upload your photo and any clothing item — see exactly how it looks on you before you purchase.</p>
+  <a href="https://apps.apple.com" class="cta">
+    <svg viewBox="0 0 24 24" fill="currentColor"><path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.8-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z"/></svg>
+    Download on the App Store
+  </a>
+</section>
+
+<hr class="divider">
+
+<section class="features" id="features">
+  <div class="feature">
+    <div class="feature-icon">📸</div>
+    <h3>Your photo, your wardrobe</h3>
+    <p>Upload a full-body photo once. Try on any outfit, any time, without re-uploading.</p>
+  </div>
+  <div class="feature">
+    <div class="feature-icon">🛍️</div>
+    <h3>Shop anywhere</h3>
+    <p>Screenshot any clothing item from any store — Zara, Amazon, Instagram — and see it on you instantly.</p>
+  </div>
+  <div class="feature">
+    <div class="feature-icon">✨</div>
+    <h3>Stylist score</h3>
+    <p>Every outfit gets an honest score and a short stylist comment. No hollow praise — real feedback.</p>
+  </div>
+  <div class="feature">
+    <div class="feature-icon">👗</div>
+    <h3>Build your wardrobe</h3>
+    <p>Save your favourite pieces. Mix and match tops, bottoms and dresses in seconds.</p>
+  </div>
+</section>
+
+<hr class="divider">
+
+<section class="privacy" id="privacy">
+  <h2>Privacy Policy</h2>
+  <p class="updated">Last updated: June 17, 2026</p>
+
+  <p>Ayna ("we", "our", or "us") is committed to protecting your privacy. This policy explains, in plain language, what information the app collects, who we share it with, and why.</p>
+
+  <h3>1. What We Collect</h3>
+  <ul>
+    <li><strong>Your body photo:</strong> the full-body photo you upload to see how clothes look on you.</li>
+    <li><strong>Clothing photos:</strong> images of the items you want to try on (screenshots, product photos, or photos from your own wardrobe).</li>
+    <li><strong>Basic usage data:</strong> how many try-ons you've performed, stored only on your own device to manage free trial limits.</li>
+  </ul>
+  <p>Ayna does not require an account. We never collect your name, email address, or any other personal identifier.</p>
+
+  <h3>2. Who We Share It With, and Why</h3>
+  <p>To generate your try-on result, your body photo and the clothing photo are sent, over an encrypted connection, to the following third-party AI services. We share the minimum data needed for each service to do its job:</p>
+  <ul>
+    <li><strong>FASHN AI</strong> (fashn.ai) — receives your body photo and the clothing photo to generate the virtual try-on image. FASHN does not retain these photos after the result is generated.</li>
+    <li><strong>Anthropic</strong> (anthropic.com) — receives only the generated try-on result image (not your original body photo) to produce a short stylist comment and score. Anthropic does not retain this image after generating the comment.</li>
+    <li><strong>imgbb</strong> — used as temporary image hosting so the photos above can be passed between services. Images are automatically deleted after a few minutes.</li>
+    <li><strong>Netlify</strong> — hosts the app's backend functions that relay requests to the services above. Netlify does not store your photos.</li>
+  </ul>
+  <p>By tapping "Try it on" inside the app, you agree to your body photo and the clothing photo being sent to FASHN AI and Anthropic as described above. You can use Ayna without this happening only by not using the try-on feature.</p>
+  <p>We do not sell your data. We do not use your photos to train AI models. We do not share your data with anyone for advertising or marketing purposes.</p>
+
+  <h3>3. Where Your Data Is Stored</h3>
+  <ul>
+    <li>Your body photo and your wardrobe items are stored locally on your own device only. Ayna does not keep a copy on our servers.</li>
+    <li>All data sent between the app and our servers, and between our servers and the AI services above, is encrypted using HTTPS/TLS.</li>
+    <li>Generated try-on images are temporarily hosted by the third-party services listed above and are automatically deleted shortly after processing.</li>
+  </ul>
+
+  <h3>4. Your Choices</h3>
+  <p>Since Ayna does not collect data tied to your identity, there is no account to delete. You can remove all locally stored data — your saved photo, wardrobe items, and usage history — at any time by clearing the app's data or uninstalling the app.</p>
+
+  <h3>5. Children's Privacy</h3>
+  <p>Ayna is not directed at children under the age of 13, and we do not knowingly collect personal information from children.</p>
+
+  <h3>6. Changes to This Policy</h3>
+  <p>We may update this privacy policy from time to time. Any significant changes will be reflected by updating the date at the top of this page.</p>
+
+  <h3>7. Contact</h3>
+  <p>If you have any questions about this privacy policy, please contact us at <a href="mailto:hello@ayna.style">hello@ayna.style</a>.</p>
+</section>
+
+<footer>
+  <p>© 2026 Ayna. All rights reserved. &nbsp;·&nbsp; <a href="#privacy">Privacy Policy</a> &nbsp;·&nbsp; <a href="mailto:hello@ayna.style">Contact</a></p>
+</footer>
+
+</body>
+</html>
