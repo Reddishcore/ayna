@@ -115,6 +115,12 @@ header{text-align:center;margin:8px 0 20px;}
 .error.show{display:block;}
 .consent-body{font-size:13px;color:var(--muted);line-height:1.6;margin-bottom:16px;}
 .consent-body a{color:var(--accent);}
+.ai-notice{margin-top:12px;padding:10px 14px;border-radius:10px;background:#F0EDE8;border:1px solid var(--line);font-size:11px;color:var(--muted);line-height:1.5;text-align:center;}
+.ai-notice a{color:var(--accent);}
+.consent-check-row{display:flex;align-items:flex-start;gap:10px;margin-bottom:16px;}
+.consent-check-row input[type=checkbox]{margin-top:2px;width:18px;height:18px;flex-shrink:0;accent-color:var(--ink);cursor:pointer;}
+.consent-check-row label{font-size:13px;color:var(--ink);line-height:1.5;cursor:pointer;}
+.consent-check-row label a{color:var(--accent);}
 </style>
 </head>
 <body>
@@ -175,6 +181,10 @@ header{text-align:center;margin:8px 0 20px;}
     </div>
   </div>
 
+  <div class="ai-notice" id="i-ai-notice">
+    📷 <span id="i-ai-notice-text">Fotoğraflarınız FASHN AI ve Anthropic'e gönderilir — işlem sonrası saklanmaz.</span>
+    <a href="/privacy.html" target="_blank" id="i-ai-notice-link">Gizlilik Politikası</a>
+  </div>
   <button class="go" id="go" disabled>Üzerimde göster</button>
   <p class="hint" id="i-hint">Üzerindekinden farklı tonda parça en net sonucu verir.</p>
   <p style="margin-top:8px;text-align:center;font-size:11px;"><a href="/privacy.html" style="color:var(--muted);text-decoration:none;">Gizlilik Politikası · Privacy Policy</a></p>
@@ -218,7 +228,11 @@ header{text-align:center;margin:8px 0 20px;}
       "Üzerimde göster"e bastığınızda, fotoğrafınız ve kıyafet fotoğrafı, deneme görselini oluşturmak için FASHN AI'a, stil yorumu oluşturmak için ise Anthropic'e gönderilir. Fotoğraflarınız işlem sonrası saklanmaz.
       <a href="/privacy.html" target="_blank">Gizlilik Politikası</a>
     </p>
-    <button class="cat-confirm" id="consent-accept">Anladım, devam et</button>
+    <div class="consent-check-row">
+      <input type="checkbox" id="consent-check">
+      <label for="consent-check" id="i-consent-check-label">Bu fotoğraf bana aittir ve yapay zeka ile işlenmesine onay veriyorum.</label>
+    </div>
+    <button class="cat-confirm" id="consent-accept" disabled style="opacity:0.35">Anladım, devam et</button>
     <button class="cat-cancel" id="consent-cancel">Vazgeç</button>
   </div>
 </div>
@@ -268,7 +282,10 @@ var I18N = {
     consent_title:"Fotoğraflarınız nasıl kullanılır?",
     consent_body:"\"Üzerimde göster\"e bastığınızda, fotoğrafınız ve kıyafet fotoğrafı, deneme görselini oluşturmak için FASHN AI'a, stil yorumu oluşturmak için ise Anthropic'e gönderilir. Fotoğraflarınız işlem sonrası saklanmaz.",
     consent_accept:"Anladım, devam et",
-    consent_cancel:"Vazgeç"
+    consent_cancel:"Vazgeç",
+    consent_check:"Bu fotoğraf bana aittir ve yapay zeka ile işlenmesine onay veriyorum.",
+    ai_notice:"Fotoğraflarınız FASHN AI ve Anthropic'e gönderilir — işlem sonrası saklanmaz.",
+    ai_notice_link:"Gizlilik Politikası"
   },
   en: {
     tagline:"Try before you buy",combo:"Outfit",dress:"Dress",
@@ -293,7 +310,10 @@ var I18N = {
     consent_title:"How your photos are used",
     consent_body:"When you tap \"Try it on\", your photo and the clothing photo are sent to FASHN AI to generate the try-on image, and to Anthropic to generate the stylist comment. Your photos are not kept after processing.",
     consent_accept:"I understand, continue",
-    consent_cancel:"Cancel"
+    consent_cancel:"Cancel",
+    consent_check:"This photo belongs to me and I consent to AI processing.",
+    ai_notice:"Your photos are sent to FASHN AI and Anthropic — not retained after processing.",
+    ai_notice_link:"Privacy Policy"
   }
 };
 
@@ -339,6 +359,9 @@ function applyLang(){
   $("i-consent-body").innerHTML=t("consent_body")+' <a href="/privacy.html" target="_blank">'+(lang==="tr"?"Gizlilik Politikası":"Privacy Policy")+'</a>';
   $("consent-accept").textContent=t("consent_accept");
   $("consent-cancel").textContent=t("consent_cancel");
+  $("i-consent-check-label").innerHTML=t("consent_check");
+  $("i-ai-notice-text").textContent=t("ai_notice");
+  $("i-ai-notice-link").textContent=t("ai_notice_link");
   $("lang-tr").classList.toggle("on",lang==="tr");
   $("lang-en").classList.toggle("on",lang==="en");
   renderWardrobe();
@@ -608,13 +631,19 @@ function startTryOn(){
   chain.then(showResult).catch(function(e){showError(t("err_fail")+e.message);});
 }
 
-/* Go — gate behind consent */
+/* Go — always show consent modal */
 $("go").addEventListener("click",function(){
-  if(hasConsent()){startTryOn();return;}
+  $("consent-check").checked=false;
+  $("consent-accept").disabled=true;
+  $("consent-accept").style.opacity="0.35";
   $("consent-modal-bg").classList.add("show");
 });
+$("consent-check").addEventListener("change",function(){
+  $("consent-accept").disabled=!this.checked;
+  $("consent-accept").style.opacity=this.checked?"1":"0.35";
+});
 $("consent-accept").addEventListener("click",function(){
-  setConsent();
+  if(!$("consent-check").checked)return;
   $("consent-modal-bg").classList.remove("show");
   startTryOn();
 });
