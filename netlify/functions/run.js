@@ -18,13 +18,16 @@ exports.handler = async (event) => {
     return { statusCode: 400, body: JSON.stringify({ error: "Geçersiz istek gövdesi" }) };
   }
 
-  const { model_image, garment_image, category } = payload;
+  const { model_image, garment_image, category, garment_photo_type } = payload;
   if (!model_image || !garment_image) {
     return { statusCode: 400, body: JSON.stringify({ error: "İki fotoğraf da gerekli" }) };
   }
 
   const validCategories = ["tops", "bottoms", "one-pieces", "auto"];
   const garmentCategory = validCategories.includes(category) ? category : "tops";
+
+  const validPhotoTypes = ["auto", "flat-lay", "model"];
+  const garmentPhotoType = validPhotoTypes.includes(garment_photo_type) ? garment_photo_type : "auto";
 
   try {
     const res = await fetch("https://api.fashn.ai/v1/run", {
@@ -40,7 +43,8 @@ exports.handler = async (event) => {
           garment_image,
           category: garmentCategory,
           mode: "quality",
-          garment_photo_type: "flat-lay"
+          garment_photo_type: garmentPhotoType,
+          segmentation_free: false
         }
       })
     });
