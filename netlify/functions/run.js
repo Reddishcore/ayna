@@ -39,7 +39,8 @@ exports.handler = async (event) => {
           model_image,
           garment_image,
           category: garmentCategory,
-          mode: "quality"
+          mode: "quality",
+          garment_photo_type: "flat-lay"
         }
       })
     });
