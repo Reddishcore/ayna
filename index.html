@@ -418,6 +418,18 @@ function fillSlot(slotId,dataUrl){
   var wrap=slot.closest(".slot-wrap");
   if(wrap){var d=wrap.querySelector(".slot-del");if(d)d.style.display="flex";}
 }
+/* GEÇİCİ DEBUG — classify-garment sonucunu slot üzerinde göster */
+function setDebugType(slotId,typeVal){
+  var slot=$(slotId);if(!slot)return;
+  var b=slot.querySelector(".debug-type");
+  if(!b){
+    b=document.createElement("div");b.className="debug-type";
+    b.style.cssText="position:absolute;bottom:2px;left:2px;right:2px;background:rgba(0,0,0,0.75);color:#fff;font-size:9px;padding:2px 4px;border-radius:4px;text-align:center;z-index:5;pointer-events:none;";
+    slot.style.position="relative";
+    slot.appendChild(b);
+  }
+  b.textContent="type: "+typeVal;
+}
 function clearSlot(slotId,key){
   var slot=$(slotId),old=slot.querySelector("img");
   if(old)old.remove();
@@ -536,7 +548,7 @@ function bindGarmentSlot(fileId,slotId,key){
     resizeToDataURL(f,function(d){
       state[key]=d;fillSlot(slotId,d);updateGo();
       setSlotLoading(slotId,true);
-      classifyGarment(d).then(function(ptype){state[key+"Type"]=ptype;});
+      classifyGarment(d).then(function(ptype){state[key+"Type"]=ptype;setDebugType(slotId,ptype);});
       cleanGarment(d).then(function(cleanUrl){
         state[key]=cleanUrl;fillSlot(slotId,cleanUrl);
         setSlotLoading(slotId,false);updateGo();
