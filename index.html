@@ -422,7 +422,7 @@ function clearSlot(slotId,key){
   var slot=$(slotId),old=slot.querySelector("img");
   if(old)old.remove();
   slot.classList.remove("filled");
-  state[key]=null;
+  state[key]=null;state[key+"Type"]=null;
   // del butonunu gizle
   var wrap=slot.closest(".slot-wrap");
   if(wrap){var d=wrap.querySelector(".slot-del");if(d)d.style.display="";}
@@ -495,6 +495,18 @@ function cleanGarment(dataUrl){
   })
   .then(function(url){return trimTransparent(url);});
 }
+
+/* Garment photo type — flat-lay vs model, via Claude Haiku */
+function classifyGarment(dataUrl){
+  return fetch("/.netlify/functions/classify-garment",{
+    method:"POST",headers:{"Content-Type":"application/json"},
+    body:JSON.stringify({image:dataUrl})
+  })
+  .then(function(r){return r.json();})
+  .then(function(d){return d&&d.type?d.type:"auto";})
+  .catch(function(){return "auto";});
+}
+
 function waitForClean(id){
   return new Promise(function(resolve,reject){
     var tries=0;
@@ -524,6 +536,7 @@ function bindGarmentSlot(fileId,slotId,key){
     resizeToDataURL(f,function(d){
       state[key]=d;fillSlot(slotId,d);updateGo();
       setSlotLoading(slotId,true);
+      classifyGarment(d).then(function(ptype){state[key+"Type"]=ptype;});
       cleanGarment(d).then(function(cleanUrl){
         state[key]=cleanUrl;fillSlot(slotId,cleanUrl);
         setSlotLoading(slotId,false);updateGo();
@@ -560,13 +573,14 @@ function renderWardrobe(){
     thumb.addEventListener("click",function(){
       if(state.editMode)return;
       var cat=item.cat;
-      if(state.mode==="one-pieces"){state.g1=item.data;fillSlot("slot-g1",item.data);}
-      else if(cat==="tops"||cat==="jacket"){state.g1=item.data;fillSlot("slot-g1",item.data);}
-      else if(cat==="bottoms"){state.g2=item.data;fillSlot("slot-g2",item.data);}
+      var ptype=item.photoType||"auto";
+      if(state.mode==="one-pieces"){state.g1=item.data;state.g1Type=ptype;fillSlot("slot-g1",item.data);}
+      else if(cat==="tops"||cat==="jacket"){state.g1=item.data;state.g1Type=ptype;fillSlot("slot-g1",item.data);}
+      else if(cat==="bottoms"){state.g2=item.data;state.g2Type=ptype;fillSlot("slot-g2",item.data);}
       else{
-        if(!state.g1){state.g1=item.data;fillSlot("slot-g1",item.data);}
-        else if(!state.g2){state.g2=item.data;fillSlot("slot-g2",item.data);}
-        else{state.g1=item.data;fillSlot("slot-g1",item.data);}
+        if(!state.g1){state.g1=item.data;state.g1Type=ptype;fillSlot("slot-g1",item.data);}
+        else if(!state.g2){state.g2=item.data;state.g2Type=ptype;fillSlot("slot-g2",item.data);}
+        else{state.g1=item.data;state.g1Type=ptype;fillSlot("slot-g1",item.data);}
       }
       updateGo();window.scrollTo({top:0,behavior:"smooth"});
     });
@@ -600,6 +614,8 @@ $("file-wadd").addEventListener("change",function(ev){
     $("file-wadd").value="";
     var wadd=$("wadd-label");
     wadd.classList.add("cleaning");wadd.style.pointerEvents="none";
+    state.pendingWardrobeType="auto";
+    classifyGarment(d).then(function(ptype){state.pendingWardrobeType=ptype;});
     cleanGarment(d).then(function(cleanUrl){
       wadd.classList.remove("cleaning");wadd.style.pointerEvents="";
       state.pendingWardrobeData=cleanUrl;openCatModal();
@@ -625,8 +641,8 @@ document.querySelectorAll(".cat-opt").forEach(function(opt){
 });
 $("cat-confirm").addEventListener("click",function(){
   if(!state.pendingWardrobeData){closeCatModal();return;}
-  wardrobe.push({data:state.pendingWardrobeData,cat:state.selectedCat||"other"});
-  saveWardrobe(wardrobe);renderWardrobe();closeCatModal();
+  wardrobe.push({data:state.pendingWardrobeData,cat:state.selectedCat||"other",photoType:state.pendingWardrobeType||"auto"});
+  saveWardrobe(wardrobe);renderWardrobe();closeCatModal();state.pendingWardrobeType=null;
 });
 $("cat-cancel").addEventListener("click",closeCatModal);
 $("cat-modal-bg").addEventListener("click",function(e){if(e.target===this)closeCatModal();});
@@ -685,10 +701,10 @@ function setLoadingLine(txt){$("loading-line").textContent=txt;}
 function stopLoadingUI(){if(state.timer)clearInterval(state.timer);$("stage-loading").classList.remove("show");updateGo();}
 
 /* API */
-function runOnce(modelImg,garmentImg,category){
+function runOnce(modelImg,garmentImg,category,garmentType){
   return fetch("/.netlify/functions/run",{
     method:"POST",headers:{"Content-Type":"application/json"},
-    body:JSON.stringify({model_image:modelImg,garment_image:garmentImg,category:category})
+    body:JSON.stringify({model_image:modelImg,garment_image:garmentImg,category:category,garment_photo_type:garmentType||"auto"})
   })
   .then(function(r){return r.json().then(function(d){return{ok:r.ok,d:d};});})
   .then(function(res){
@@ -716,18 +732,18 @@ function startTryOn(){
   getLines();
   if(state.mode==="one-pieces"){
     startLoadingUI(LINES);
-    runOnce(state.model,state.g1,"one-pieces").then(showResult).catch(function(e){showError(t("err_fail")+e.message);});
+    runOnce(state.model,state.g1,"one-pieces",state.g1Type).then(showResult).catch(function(e){showError(t("err_fail")+e.message);});
     return;
   }
   var steps=[];
-  if(state.g1)steps.push({data:state.g1,cat:"tops"});
-  if(state.g2)steps.push({data:state.g2,cat:"bottoms"});
+  if(state.g1)steps.push({data:state.g1,cat:"tops",type:state.g1Type});
+  if(state.g2)steps.push({data:state.g2,cat:"bottoms",type:state.g2Type});
   startLoadingUI(steps.length>1?LINES2:LINES);
   var chain=Promise.resolve(state.model);
   steps.forEach(function(step,i){
     chain=chain.then(function(cur){
       if(i===1)setLoadingLine(t("loading_bottom"));
-      return runOnce(cur,step.data,step.cat);
+      return runOnce(cur,step.data,step.cat,step.type);
     });
   });
   chain.then(showResult).catch(function(e){showError(t("err_fail")+e.message);});
@@ -809,7 +825,7 @@ function fetchStylist(imageUrl){
 
 /* Again */
 $("again").addEventListener("click",function(){
-  state.g1=null;state.g2=null;
+  state.g1=null;state.g2=null;state.g1Type=null;state.g2Type=null;
   clearSlot("slot-g1","g1");clearSlot("slot-g2","g2");
   $("file-g1").value="";$("file-g2").value="";
   $("stage-result").classList.remove("show");
