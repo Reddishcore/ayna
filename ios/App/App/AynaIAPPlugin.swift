@@ -23,7 +23,7 @@ public class AynaIAPPlugin: CAPPlugin, CAPBridgedPlugin {
         }
         if !configured {
             Purchases.logLevel = .warn
-            Purchases.configure(withAPIKey: "test_qVrAtBtneyHKaMlTVydIeKQPZdP", appUserID: email)
+            Purchases.configure(withAPIKey: "appl_AcbtjjNsIZkEzNREurKklReuFXP", appUserID: email)
             configured = true
         } else {
             Purchases.shared.logIn(email) { _, _, _ in }
