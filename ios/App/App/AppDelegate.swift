@@ -1,17 +1,22 @@
 import UIKit
 import Capacitor
+import TikTokBusinessSDK
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
     var window: UIWindow?
-
     // Derleyicinin/linker'in AynaIAPPlugin'i "kullanilmiyor" sanip silmesini
     // onlemek icin bilerek tutulan referans (calisma zamaninda kullanilmiyor,
     // sadece sinifin binary'de kalmasini garantiliyor).
     private let _keepAliveAynaIAPPlugin = AynaIAPPlugin()
-
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         // Override point for customization after application launch.
+        let config = TikTokConfig(appId: "6780380139", tiktokAppId: "6766299524777705479")
+        TikTokBusiness.initializeSdk(config) { success, error in
+            if let error = error {
+                print("TikTok SDK init error: \(error)")
+            }
+        }
         return true
     }
     func applicationWillResignActive(_ application: UIApplication) {
